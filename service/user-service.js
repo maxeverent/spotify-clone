@@ -18,12 +18,13 @@ class UserService {
       id: user._id,
       fullname: user.fullname,
       email: user.email,
-      username: user.username
+      username: user.username,
+      cover: user.cover
     }
     const tokens = tokenService.generateTokens(payload)
     await tokenService.saveToken(user._id, tokens.refreshToken)
     return {
-      ...tokens, payload
+      ...tokens, user: payload
     }
   }
 
@@ -36,12 +37,13 @@ class UserService {
       id: user._id,
       fullname: user.fullname,
       username: user.username,
-      email: user.username
+      email: user.username,
+      cover: user.cover
     }
     const tokens = tokenService.generateTokens(payload)
     await tokenService.saveToken(user._id, tokens.refreshToken)
     return {
-      ...tokens, payload
+      ...tokens, user: payload
     }
   }
 
@@ -52,6 +54,7 @@ class UserService {
 
   async refresh(refreshToken) {
     if (!refreshToken) throw Error('Пользователь не авторизован')
+    console.log('qwe')
     const user = tokenService.validateRefreshToken(refreshToken)
     const token = await tokenService.findToken(refreshToken)
     if (!user || !token) throw Error('Пользователь не авторизован')
@@ -60,12 +63,14 @@ class UserService {
       id: currentUser.id,
       fullname: currentUser.fullname,
       username: currentUser.username,
-      email: currentUser.username
+      email: currentUser.username,
+      cover: currentUser.cover
     }
+    console.log(payload)
     const tokens = tokenService.generateTokens(payload)
     await tokenService.saveToken(user.id, tokens.refreshToken)
     return {
-      ...tokens, payload
+      ...tokens, user: payload
     }
   }
 

@@ -1,9 +1,9 @@
-import 'dotenv'
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
+import cors from 'cors';
 
 const url = 'mongodb://127.0.0.1:27017/spotify-clone';
 const PORT = 5000;
@@ -22,6 +22,15 @@ import authMiddleware from './middlewares/auth-middleware.js'
 
 const app = express();
 
+const corsOptions = {
+  origin: 'http://localhost:8080',
+  methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+
 app.use(fileUpload({}));
 app.use(cookieParser())
 app.use(express.json())
@@ -36,7 +45,7 @@ app.use('/artist', authMiddleware, artistRouter)
 app.use('/album', authMiddleware, albumRouter)
 app.use('/favorite', authMiddleware, favoriteRouter)
 app.use('/playlist', authMiddleware, playlistRouter)
-app.use('/user', authMiddleware, userRouter)
+app.use('/user', userRouter)
 app.use(errorMiddleware)
 
 const start = async () => {
